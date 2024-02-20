@@ -147,34 +147,90 @@ app.get('/logout', (req, res) => {
   res.json({ status: 200 });
 });
 
+// app.post('/taxcal', (req, res) => {
+//   const salary = req.body.salary;
+//   const role = req.body.role;
+//   let employeeTaxRate;
+//   if (role === 'employee') {
+//     employeeTaxRate = 0.25;
+//   } else {
+//     employeeTaxRate = 0.30;
+//   }
+//   let tax = 0;
+//   if (salary <= 100000) {
+//     tax = 0;
+//   } else if (salary < 141667 && salary > 100000) {
+//     tax = 0.06 * salary;
+//   } else if (salary >= 141667 && salary < 183333) {
+//     tax = 0.12 * salary;
+//   }
+//   else if (salary >= 183333 && salary < 225000) {
+//     tax = 0.18 * salary;
+//   }
+//   else if (salary >= 225000 && salary < 266667) {
+//     tax = 0.24 * salary;
+//   }
+//   else if (salary >= 266667 && salary < 308333) {
+//     tax = 0.30 * salary;
+//   }
+//    else {
+//     tax = 0.36 * salary;
+//   }
+
+//   let homeSalary = salary - tax;
+//   res.json({homeSalary : homeSalary , tax : tax}) ;
+//   //res.send(`The tax for ${salary} is ${tax}.`);
+//   // res.json(tax);
+// });
+
 app.post('/taxcal', (req, res) => {
   const salary = req.body.salary;
+  const role = req.body.role;
   let tax = 0;
+  let EPFDeduction = 0;
+  let ETFDeduction = 0;
+  let employerEPFDeduction = 0;
+
   if (salary <= 100000) {
     tax = 0;
   } else if (salary < 141667 && salary > 100000) {
     tax = 0.06 * salary;
   } else if (salary >= 141667 && salary < 183333) {
     tax = 0.12 * salary;
-  }
-  else if (salary >= 183333 && salary < 225000) {
+  } else if (salary >= 183333 && salary < 225000) {
     tax = 0.18 * salary;
-  }
-  else if (salary >= 225000 && salary < 266667) {
+  } else if (salary >= 225000 && salary < 266667) {
     tax = 0.24 * salary;
-  }
-  else if (salary >= 266667 && salary < 308333) {
+  } else if (salary >= 266667 && salary < 308333) {
     tax = 0.30 * salary;
-  }
-   else {
+  } else {
     tax = 0.36 * salary;
   }
 
-  let homeSalary = salary - tax;
-  res.json({homeSalary : homeSalary , tax : tax}) ;
-  //res.send(`The tax for ${salary} is ${tax}.`);
-  // res.json(tax);
+  // Calculate EPF and ETF deductions based on role
+  if (role === 'employee') {
+    EPFDeduction = salary * 0.12; // 12% of employee's monthly gross earnings
+    ETFDeduction = salary * 0.08; // 8% of employee's monthly gross earnings
+  } else if (role === 'employer') {
+    EPFDeduction = salary * 0.12; // 12% of employee's monthly gross earnings
+    ETFDeduction = salary * 0.08; // 8% of employee's monthly gross earnings
+    employerEPFDeduction = salary * 0.03; // 3% of every employee’s monthly total earnings
+  }
+
+  const totalDeductions = EPFDeduction + ETFDeduction + employerEPFDeduction;
+
+  let homeSalary = salary - tax - totalDeductions;
+
+  res.json({
+    homeSalary: homeSalary,
+    tax: tax,
+    EPFDeduction: EPFDeduction,
+    ETFDeduction: ETFDeduction,
+    employerEPFDeduction: employerEPFDeduction,
+    totalEPF_ETF: totalDeductions,
+  });
 });
+
 
 app.post('/save-salary', (req, res) => {
   
