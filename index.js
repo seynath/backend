@@ -10,11 +10,13 @@ const authMiddleware = require('./middleware/authMiddleware');
 const app = express();
 app.use(cors(
   {
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   }
 ));
+
+// app.use(cors()); // Uncomment this line to enable CORS
 app.use(express.json());
 app.use(cookieParser());
 
@@ -26,45 +28,7 @@ const db = mysql.createConnection({
     database: 'crud'
 });
 
-// app.get('/data', (req, res) => {
-//   const sql = 'SELECT * FROM student';
-//   db.query(sql, (error, result) => {
-//     if (error) 
-//     return res.json(error);
-//     res.json(result);
-//   });
-// });
 
-// app.get('/delete/:id', (req, res) => {
-//   const id = req.params.id;
-//   const sql = 'SELECT * FROM student WHERE id = ?';
-//   db.query(sql, [id], (error, result) => {
-//     if (error) return res.json(error);
-//     res.json(result[0]);
-//   });
-// });
-
-// app.post('/create', (req, res) => {
-//   const name = req.body.name;
-//   const email = req.body.email;
-//   const sql = 'INSERT INTO student (name, email) VALUES (?, ?)';
-//   db.query(sql, [name, email], (error, result) => {
-//     if (error) 
-//     return res.json(error);
-//     res.json(result);
-//   });
-// });
-
-// app.put('/edit/:id', (req, res) => {
-//   const id = req.params.id;
-//   const name = req.body.name;
-//   const email = req.body.email;
-//   const sql = 'UPDATE student SET name = ?, email = ? WHERE id = ?';
-//   db.query(sql, [name, email, id], (error, result) => {
-//     if (error) return res.json(error);
-//     res.json(result);
-//   });
-// });
 
 app.delete('/delete/:id', (req, res) => {
   const id = req.params.id;
@@ -147,41 +111,6 @@ app.get('/logout', (req, res) => {
   res.json({ status: 200 });
 });
 
-// app.post('/taxcal', (req, res) => {
-//   const salary = req.body.salary;
-//   const role = req.body.role;
-//   let employeeTaxRate;
-//   if (role === 'employee') {
-//     employeeTaxRate = 0.25;
-//   } else {
-//     employeeTaxRate = 0.30;
-//   }
-//   let tax = 0;
-//   if (salary <= 100000) {
-//     tax = 0;
-//   } else if (salary < 141667 && salary > 100000) {
-//     tax = 0.06 * salary;
-//   } else if (salary >= 141667 && salary < 183333) {
-//     tax = 0.12 * salary;
-//   }
-//   else if (salary >= 183333 && salary < 225000) {
-//     tax = 0.18 * salary;
-//   }
-//   else if (salary >= 225000 && salary < 266667) {
-//     tax = 0.24 * salary;
-//   }
-//   else if (salary >= 266667 && salary < 308333) {
-//     tax = 0.30 * salary;
-//   }
-//    else {
-//     tax = 0.36 * salary;
-//   }
-
-//   let homeSalary = salary - tax;
-//   res.json({homeSalary : homeSalary , tax : tax}) ;
-//   //res.send(`The tax for ${salary} is ${tax}.`);
-//   // res.json(tax);
-// });
 
 app.post('/taxcal', (req, res) => {
   const salary = req.body.salary;
