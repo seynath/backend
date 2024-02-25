@@ -10,7 +10,7 @@ require ('dotenv').config();
 const app = express();
 app.use(cors(
   {
-    origin: ["http://localhost:5173"],
+    origin: [`${process.env.CLIENT_URL}`],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   }
@@ -36,8 +36,6 @@ const db = mysql.createConnection({
   waitForConnections: true,
   connectionLimit: 10, // Adjust according to your needs
   queueLimit: 0, // Unlimited queueing
-  acquireTimeout: 10000, // milliseconds
-  connectionTimeout: 10000, // milliseconds
 });
 
 // const db = mysql.createConnection({
