@@ -1,11 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const authMiddleware = require('./middleware/authMiddleware');
-
+require ('dotenv').config();
 
 const app = express();
 app.use(cors(
@@ -21,12 +21,39 @@ app.use(express.json());
 app.use(cookieParser());
 
 
+// const db = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '',
+//     database: 'crud'
+// });
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'crud'
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  port : process.env.DB_PORT,
+  waitForConnections: true,
+  connectionLimit: 10, // Adjust according to your needs
+  queueLimit: 0, // Unlimited queueing
+  acquireTimeout: 10000, // milliseconds
+  connectionTimeout: 10000, // milliseconds
 });
+
+// const db = mysql.createConnection({
+//   host: 'sql.freedb.tech',
+//   user: 'freedb_adminmit',
+//   password: 'k4JYBU!PT$t9MYt',
+//   database: 'freedb_web2mit'
+// });
+
+// const db = mysql.createConnection({
+//   host: 'sql.freedb.tech', // FreeDB host
+//   port: 3306, // MySQL port
+//   user: 'freedb_adminmit', // Database user
+//   password: 'k4JYBU!PT$t9MYt', // Database password
+//   database: 'freedb_web2mit' // Database name
+// });
 
 
 
@@ -186,5 +213,7 @@ app.get('/report', (req, res) => {
  
 
 //conection with mysql server
-
-app.listen(8000, () => console.log('Server running on port 8000'));
+const PORT = process.env.PORT
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
